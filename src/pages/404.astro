@@ -18,31 +18,15 @@
  * along with Astro Feeds. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import Navigation from "../components/Navigation.astro";
+import Layout from "../layouts/Layout.astro";
 
-interface Props {
-  title?: string;
-}
-
-const { title } = Astro.props;
-const defaultTitle = "Astro Feeds";
+const title = "Page Not Found";
 ---
 
-<!doctype html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta content="width=device-width" name="viewport" />
-    <link href="/favicon.svg" rel="icon" type="image/svg+xml" />
-    <meta content={Astro.generator} name="generator" />
-    <title>
-      {title !== undefined ? `${title} — ${defaultTitle}` : defaultTitle}
-    </title>
-  </head>
-  <body>
-    <Navigation />
-    <main>
-      <slot />
-    </main>
-  </body>
-</html>
+<Layout title={title}>
+  <h1>{title}</h1>
+  <p>
+    Sorry, the page you’re looking for isn’t there. Maybe it got moved, or
+    deleted?
+  </p>
+</Layout>

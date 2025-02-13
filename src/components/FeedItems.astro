@@ -18,31 +18,37 @@
  * along with Astro Feeds. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import Navigation from "../components/Navigation.astro";
+import type { SimpleFeedItem } from "../utils/types";
+import Date from "./Date.astro";
 
 interface Props {
-  title?: string;
+  feedItems: SimpleFeedItem[];
 }
 
-const { title } = Astro.props;
-const defaultTitle = "Astro Feeds";
+const { feedItems } = Astro.props;
 ---
 
-<!doctype html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta content="width=device-width" name="viewport" />
-    <link href="/favicon.svg" rel="icon" type="image/svg+xml" />
-    <meta content={Astro.generator} name="generator" />
-    <title>
-      {title !== undefined ? `${title} — ${defaultTitle}` : defaultTitle}
-    </title>
-  </head>
-  <body>
-    <Navigation />
-    <main>
-      <slot />
-    </main>
-  </body>
-</html>
+<ol>
+  {
+    feedItems.map(({ htmlUrl, title, published, updated }) => (
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-return
+      <li>
+        <p>
+          <a href={htmlUrl}>{title ?? "Untitled"}</a>
+        </p>
+        {published && (
+          <p>
+            Published <Date date={published} />
+          </p>
+        )}
+        {updated &&
+          published &&
+          updated.getTime() - published.getTime() > 24 * 60 * 60 && (
+            <p>
+              Updated <Date date={updated} />
+            </p>
+          )}
+      </li>
+    ))
+  }
+</ol>

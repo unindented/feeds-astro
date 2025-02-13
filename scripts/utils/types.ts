@@ -1,4 +1,3 @@
----
 /**
  * Copyright 2025 Daniel Perez Alvarez
  *
@@ -18,31 +17,20 @@
  * along with Astro Feeds. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import Navigation from "../components/Navigation.astro";
+import type { DatabaseSync } from "node:sqlite";
 
-interface Props {
-  title?: string;
+import type {
+  OpmlDocument,
+  SimpleFeed,
+  SimpleFeedItem,
+} from "../../src/utils/types.ts";
+
+export interface TasksContext {
+  opmlFilePath: string;
+  opmlDocument: OpmlDocument | null;
+  feeds: SimpleFeed[];
+  feedItems: SimpleFeedItem[];
+
+  sqliteFilePath: string;
+  sqliteDatabase: DatabaseSync | null;
 }
-
-const { title } = Astro.props;
-const defaultTitle = "Astro Feeds";
----
-
-<!doctype html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta content="width=device-width" name="viewport" />
-    <link href="/favicon.svg" rel="icon" type="image/svg+xml" />
-    <meta content={Astro.generator} name="generator" />
-    <title>
-      {title !== undefined ? `${title} — ${defaultTitle}` : defaultTitle}
-    </title>
-  </head>
-  <body>
-    <Navigation />
-    <main>
-      <slot />
-    </main>
-  </body>
-</html>

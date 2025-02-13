@@ -18,16 +18,43 @@
  * along with Astro Feeds. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import FeedItems from "../components/FeedItems.astro";
-import Layout from "../layouts/Layout.astro";
-import { sqliteFilePath } from "../utils/constants.ts";
-import { getLatestFeedItems, openDatabaseReadOnly } from "../utils/sqlite.ts";
+import FeedItems from "../../components/FeedItems.astro";
+import Layout from "../../layouts/Layout.astro";
+import { sqliteFilePath } from "../../utils/constants.ts";
+import {
+  getFeedItemsForFeed,
+  getFeeds,
+  openDatabaseReadOnly,
+} from "../../utils/sqlite.ts";
+
+interface Props {
+  feedTitle: string;
+}
+
+interface StaticPathResult {
+  params: { feedId: string };
+  props: Props;
+}
+
+export function getStaticPaths(): StaticPathResult[] {
+  const db = openDatabaseReadOnly(sqliteFilePath);
+  const feeds = getFeeds(db);
+  db.close();
+
+  return feeds.map((feed) => ({
+    params: { feedId: feed.id },
+    props: { feedTitle: feed.title ?? "Untitled" },
+  }));
+}
+
+const { feedId } = Astro.params;
+const { feedTitle } = Astro.props;
 
 const db = openDatabaseReadOnly(sqliteFilePath);
-const feedItems = getLatestFeedItems(db);
+const feedItems = getFeedItemsForFeed(db, feedId);
 db.close();
 ---
 
-<Layout>
+<Layout title={feedTitle}>
   <FeedItems feedItems={feedItems} />
 </Layout>
